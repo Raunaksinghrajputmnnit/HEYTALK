@@ -4,7 +4,7 @@ import { axiosInstance } from '../lib/axios';
 import { ShipWheelIcon } from "lucide-react";
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import useSignUp from "../hooks/useSignUp";
+import useSignUp from "../hooks/useSignup";
 const SignUpPage = () => {
   const [signupData, setSignupData] = useState({
     fullName: "",
