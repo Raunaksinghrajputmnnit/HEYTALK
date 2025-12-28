@@ -10,7 +10,8 @@ export async function signup(req,res){
         if(password.length<6){
             return res.status(400).json({message:"passowrd must be atleatd 6 charcater"});
         }
-        const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+       
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return res.status(400).json({ message: "Invalid email format" });
     }
@@ -44,7 +45,7 @@ export async function signup(req,res){
       res.cookie("jwt",token,{
         maxAge:7*24*60*60*1000,
         httpOnly:true,
-        sameSite:"strict",
+        sameSite:"lax",
         secure:process.env.NODE_ENV==="production"
       });
 
@@ -62,9 +63,9 @@ export async function login(req,res){
             return res.status(400).json({message:"All fiedl are required"})
         }
         const user=await User.findOne({email});
-        if(!user) return  res.status(400).json({message:"INvalud email oor password"});
+        if(!user) return  res.status(400).json({message:"Invalid email or password"});
         const isPasswordCorrect=await user.matchPassword(password)
-        if(!isPasswordCorrect) return res.status(401).json({message:"Invalud email or password"});
+        if(!isPasswordCorrect) return res.status(401).json({message:"Invalid email or password"});
 
         const token=jwt.sign({userId:user._id},process.env.JWT_SECRET_KEY,{
             expiresIn:"7d"
@@ -72,7 +73,7 @@ export async function login(req,res){
           res.cookie("jwt",token,{
             maxAge:7*24*60*60*1000,
             httpOnly:true,
-            sameSite:"strict",
+            sameSite:"lax",
             secure:process.env.NODE_ENV==="production"
           });
           res.status(200).json({succecss:true,user});
